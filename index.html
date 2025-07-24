@@ -8,31 +8,54 @@
     body {
       font-family: Arial, sans-serif;
       background-color: #f9f9f9;
-      padding: 20px;
       color: #333;
+      display: flex;
+      justify-content: center;
+      padding: 40px;
     }
+
+    .calendar-container {
+      max-width: 700px;
+      width: 100%;
+      height: 500px; /* Фиксированная высота */
+      overflow-y: auto;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      background-color: #fff;
+      padding: 20px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      scroll-behavior: smooth;
+    }
+
     h1 {
+      text-align: center;
       color: #2c3e50;
     }
+
     .month {
       margin-bottom: 20px;
     }
+
     .month h2 {
       border-bottom: 2px solid #ccc;
       padding-bottom: 5px;
       margin-top: 30px;
     }
+
     ul {
       list-style-type: none;
       padding-left: 0;
     }
+
     li {
       padding: 4px 0;
     }
+
     .empty {
       color: #aaa;
       font-style: italic;
     }
+
     .highlight {
       background-color: #dff0d8;
       border-left: 5px solid #4CAF50;
@@ -41,70 +64,33 @@
   </style>
 </head>
 <body>
-  <h1>📅 Календарь дней рождения</h1>
-
-  <div class="month" data-month="0">
-    <h2>Январь</h2>
-    <ul><li>02 — Соня Шишуева</li></ul>
-  </div>
-  <div class="month" data-month="1">
-    <h2>Февраль</h2>
-    <ul><li>11 — Татьяна</li></ul>
-  </div>
-  <div class="month" data-month="2">
-    <h2>Март</h2>
-    <ul>
-      <li>17 — Владимир</li>
-      <li>24 — Даня Кур 17а</li>
-    </ul>
-  </div>
-  <div class="month" data-month="3">
-    <h2>Апрель</h2>
-    <ul><li class="empty">(пусто)</li></ul>
-  </div>
-  <div class="month" data-month="4">
-    <h2>Май</h2>
-    <ul><li>29 — Ph🤭</li></ul>
-  </div>
-  <div class="month" data-month="5">
-    <h2>Июнь</h2>
-    <ul>
-      <li>03 — Наташа Чкалова 17а</li>
-      <li>08 — Роман.П</li>
-      <li>27 — Владимир (повтор?)</li>
-    </ul>
-  </div>
-  <div class="month" data-month="6">
-    <h2>Июль</h2>
-    <ul><li class="empty">(пусто)</li></ul>
-  </div>
-  <div class="month" data-month="7">
-    <h2>Август</h2>
-    <ul><li>21 — Ben</li></ul>
-  </div>
-  <div class="month" data-month="8">
-    <h2>Сентябрь</h2>
-    <ul><li>02 — qq</li></ul>
-  </div>
-  <div class="month" data-month="9">
-    <h2>Октябрь</h2>
-    <ul><li>30 — Hellsing</li></ul>
-  </div>
-  <div class="month" data-month="10">
-    <h2>Ноябрь</h2>
-    <ul><li class="empty">(пусто)</li></ul>
-  </div>
-  <div class="month" data-month="11">
-    <h2>Декабрь</h2>
-    <ul><li>29 — Мышка</li></ul>
+  <div>
+    <h1>📅 Календарь дней рождения</h1>
+    <div class="calendar-container" id="calendar">
+      <div class="month" data-month="0"><h2>Январь</h2><ul><li>02 — Соня Шишуева</li></ul></div>
+      <div class="month" data-month="1"><h2>Февраль</h2><ul><li>11 — Татьяна</li></ul></div>
+      <div class="month" data-month="2"><h2>Март</h2><ul><li>17 — Владимир</li><li>24 — Даня Кур 17а</li></ul></div>
+      <div class="month" data-month="3"><h2>Апрель</h2><ul><li class="empty">(пусто)</li></ul></div>
+      <div class="month" data-month="4"><h2>Май</h2><ul><li>29 — Ph🤭</li></ul></div>
+      <div class="month" data-month="5"><h2>Июнь</h2><ul><li>03 — Наташа Чкалова 17а</li><li>08 — Роман.П</li><li>27 — Владимир (повтор?)</li></ul></div>
+      <div class="month" data-month="6"><h2>Июль</h2><ul><li class="empty">(пусто)</li></ul></div>
+      <div class="month" data-month="7"><h2>Август</h2><ul><li>21 — Ben</li></ul></div>
+      <div class="month" data-month="8"><h2>Сентябрь</h2><ul><li>02 — qq</li></ul></div>
+      <div class="month" data-month="9"><h2>Октябрь</h2><ul><li>30 — Hellsing</li></ul></div>
+      <div class="month" data-month="10"><h2>Ноябрь</h2><ul><li class="empty">(пусто)</li></ul></div>
+      <div class="month" data-month="11"><h2>Декабрь</h2><ul><li>29 — Мышка</li></ul></div>
+    </div>
   </div>
 
   <script>
-    const currentMonth = new Date().getMonth(); // 0 — Январь, 11 — Декабрь
+    const currentMonth = new Date().getMonth();
     const months = document.querySelectorAll('.month');
+    const calendarContainer = document.getElementById('calendar');
+
     months.forEach(month => {
       if (parseInt(month.dataset.month) === currentMonth) {
         month.classList.add('highlight');
+        month.scrollIntoView({ behavior: 'smooth', block: 'start' });
       }
     });
   </script>
