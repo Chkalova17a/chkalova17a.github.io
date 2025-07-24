@@ -57,6 +57,15 @@
       border-left: 5px solid #4caf50;
       padding-left: 10px;
     }
+
+    a {
+      color: #007bff;
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
   </style>
 </head>
 <body>
@@ -64,20 +73,19 @@
   <div id="calendar"></div>
 
   <script>
-    // Встроенные данные о днях рождения
     const data = [
-      {"name": "Соня Шишуева", "date": "2025-01-02"},
-      {"name": "Татьяна", "date": "2025-02-11"},
-      {"name": "Владимир", "date": "2025-03-17"},
-      {"name": "Даня Кур 17а", "date": "2025-03-24"},
-      {"name": "Ph🤭", "date": "2025-05-29"},
-      {"name": "Наташа Чкалова 17а", "date": "2025-06-03"},
-      {"name": "Роман.П", "date": "2025-06-08"},
-      {"name": "Владимир", "date": "2025-06-27"},
-      {"name": "Ben", "date": "2025-08-21"},
-      {"name": "qq", "date": "2025-09-02"},
-      {"name": "Hellsing", "date": "2025-10-30"},
-      {"name": "Мышка", "date": "2025-12-29"}
+      {"name": "Соня Шишуева", "date": "2025-01-02", "telegram": "sonya"},
+      {"name": "Татьяна", "date": "2025-02-11", "telegram": "tatiana"},
+      {"name": "Владимир", "date": "2025-03-17", "telegram": "vladimir"},
+      {"name": "Даня Кур 17а", "date": "2025-03-24", "telegram": "danya17a"},
+      {"name": "mayan", "date": "2025-03-26", "telegram": "mayan"},
+      {"name": "Ph🤭", "date": "2025-05-29", "telegram": "ph"},
+      {"name": "Наташа Чкалова 17а", "date": "2025-06-03", "telegram": "natasha17a"},
+      {"name": "Роман.П", "date": "2025-06-08", "telegram": "romanp"},
+      {"name": "Vladimir", "date": "2025-06-27", "telegram": "vladimir2"},
+      {"name": "Ставр", "date": "2025-08-25", "telegram": "stavr"},
+      {"name": "Hellsing", "date": "2025-10-30", "telegram": "hellsing"},
+      {"name": "Мышка", "date": "2025-12-29", "telegram": "myshka"}
     ];
 
     const monthsNames = [
@@ -85,19 +93,17 @@
       "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"
     ];
 
-    // Группируем по месяцам
     function groupByMonth(data) {
       const grouped = Array.from({ length: 12 }, () => []);
-      data.forEach(({name, date}) => {
+      data.forEach(({name, date, telegram}) => {
         const d = new Date(date);
         if (!isNaN(d)) {
-          grouped[d.getMonth()].push({ name, day: d.getDate() });
+          grouped[d.getMonth()].push({ name, day: d.getDate(), telegram });
         }
       });
       return grouped;
     }
 
-    // Рендер календаря
     function renderCalendar() {
       const calendar = document.getElementById('calendar');
       const grouped = groupByMonth(data);
@@ -119,9 +125,17 @@
           ul.appendChild(li);
         } else {
           birthdays.sort((a, b) => a.day - b.day);
-          birthdays.forEach(({name, day}) => {
+          birthdays.forEach(({name, day, telegram}) => {
             const li = document.createElement('li');
-            li.textContent = `${day.toString().padStart(2,'0')} — ${name}`;
+
+            const a = document.createElement('a');
+            a.href = `https://t.me/${telegram}`;
+            a.target = '_blank';
+            a.rel = 'noopener noreferrer';
+            a.textContent = name;
+
+            li.textContent = `${day.toString().padStart(2,'0')} — `;
+            li.appendChild(a);
             ul.appendChild(li);
           });
         }
@@ -130,7 +144,6 @@
         calendar.appendChild(monthDiv);
       });
 
-      // Подсветка и прокрутка к текущему месяцу
       const currentMonth = new Date().getMonth();
       const monthsElems = calendar.querySelectorAll('.month');
       monthsElems.forEach(month => {
