@@ -7,28 +7,28 @@
   <style>
     body {
       font-family: Arial, sans-serif;
-      background-color: #f9f9f9;
+      background: #f9f9f9;
       color: #333;
       margin: 0;
       padding: 20px;
     }
 
     h1 {
-      position: sticky; /* Заголовок будет закреплён сверху при прокрутке */
+      position: sticky;
       top: 0;
       background: #fff;
       padding: 10px 0;
-      margin: 0 0 20px 0;
+      margin: 0 0 20px;
       border-bottom: 2px solid #ccc;
-      z-index: 10;
       text-align: center;
       font-size: 24px;
+      z-index: 10;
     }
 
     .month {
       margin-bottom: 20px;
-      padding-top: 40px; /* Отступ сверху для прокрутки (чтобы месяц не прилипал к заголовку) */
-      scroll-margin-top: 80px; /* современный способ смещения при scrollIntoView */
+      padding-top: 40px;
+      scroll-margin-top: 80px;
     }
 
     .month h2 {
@@ -38,7 +38,7 @@
     }
 
     ul {
-      list-style-type: none;
+      list-style: none;
       padding-left: 0;
       margin: 0;
     }
@@ -61,29 +61,87 @@
 </head>
 <body>
   <h1>📅 Календарь дней рождения</h1>
-
-  <div class="month" data-month="0"><h2>Январь</h2><ul><li>02 — Соня Шишуева</li></ul></div>
-  <div class="month" data-month="1"><h2>Февраль</h2><ul><li>11 — Татьяна</li></ul></div>
-  <div class="month" data-month="2"><h2>Март</h2><ul><li>17 — Владимир</li><li>24 — Даня Кур 17а</li></ul></div>
-  <div class="month" data-month="3"><h2>Апрель</h2><ul><li class="empty">(пусто)</li></ul></div>
-  <div class="month" data-month="4"><h2>Май</h2><ul><li>29 — Ph🤭</li></ul></div>
-  <div class="month" data-month="5"><h2>Июнь</h2><ul><li>03 — Наташа Чкалова 17а</li><li>08 — Роман.П</li><li>27 — Владимир (повтор?)</li></ul></div>
-  <div class="month" data-month="6"><h2>Июль</h2><ul><li class="empty">(пусто)</li></ul></div>
-  <div class="month" data-month="7"><h2>Август</h2><ul><li>21 — Ben</li></ul></div>
-  <div class="month" data-month="8"><h2>Сентябрь</h2><ul><li>02 — qq</li></ul></div>
-  <div class="month" data-month="9"><h2>Октябрь</h2><ul><li>30 — Hellsing</li></ul></div>
-  <div class="month" data-month="10"><h2>Ноябрь</h2><ul><li class="empty">(пусто)</li></ul></div>
-  <div class="month" data-month="11"><h2>Декабрь</h2><ul><li>29 — Мышка</li></ul></div>
+  <div id="calendar"></div>
 
   <script>
-    const currentMonth = new Date().getMonth();
-    const months = document.querySelectorAll('.month');
-    months.forEach(month => {
-      if (parseInt(month.dataset.month) === currentMonth) {
-        month.classList.add('highlight');
-        month.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }
-    });
+    // Встроенные данные о днях рождения
+    const data = [
+      {"name": "Соня Шишуева", "date": "2025-01-02"},
+      {"name": "Татьяна", "date": "2025-02-11"},
+      {"name": "Владимир", "date": "2025-03-17"},
+      {"name": "Даня Кур 17а", "date": "2025-03-24"},
+      {"name": "Ph🤭", "date": "2025-05-29"},
+      {"name": "Наташа Чкалова 17а", "date": "2025-06-03"},
+      {"name": "Роман.П", "date": "2025-06-08"},
+      {"name": "Владимир", "date": "2025-06-27"},
+      {"name": "Ben", "date": "2025-08-21"},
+      {"name": "qq", "date": "2025-09-02"},
+      {"name": "Hellsing", "date": "2025-10-30"},
+      {"name": "Мышка", "date": "2025-12-29"}
+    ];
+
+    const monthsNames = [
+      "Январь", "Февраль", "Март", "Апрель", "Май", "Июнь",
+      "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"
+    ];
+
+    // Группируем по месяцам
+    function groupByMonth(data) {
+      const grouped = Array.from({ length: 12 }, () => []);
+      data.forEach(({name, date}) => {
+        const d = new Date(date);
+        if (!isNaN(d)) {
+          grouped[d.getMonth()].push({ name, day: d.getDate() });
+        }
+      });
+      return grouped;
+    }
+
+    // Рендер календаря
+    function renderCalendar() {
+      const calendar = document.getElementById('calendar');
+      const grouped = groupByMonth(data);
+
+      grouped.forEach((birthdays, monthIndex) => {
+        const monthDiv = document.createElement('div');
+        monthDiv.classList.add('month');
+        monthDiv.dataset.month = monthIndex;
+
+        const monthHeader = document.createElement('h2');
+        monthHeader.textContent = monthsNames[monthIndex];
+        monthDiv.appendChild(monthHeader);
+
+        const ul = document.createElement('ul');
+        if (birthdays.length === 0) {
+          const li = document.createElement('li');
+          li.textContent = '(пусто)';
+          li.classList.add('empty');
+          ul.appendChild(li);
+        } else {
+          birthdays.sort((a, b) => a.day - b.day);
+          birthdays.forEach(({name, day}) => {
+            const li = document.createElement('li');
+            li.textContent = `${day.toString().padStart(2,'0')} — ${name}`;
+            ul.appendChild(li);
+          });
+        }
+
+        monthDiv.appendChild(ul);
+        calendar.appendChild(monthDiv);
+      });
+
+      // Подсветка и прокрутка к текущему месяцу
+      const currentMonth = new Date().getMonth();
+      const monthsElems = calendar.querySelectorAll('.month');
+      monthsElems.forEach(month => {
+        if (parseInt(month.dataset.month) === currentMonth) {
+          month.classList.add('highlight');
+          month.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      });
+    }
+
+    renderCalendar();
   </script>
 </body>
 </html>
