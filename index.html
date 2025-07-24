@@ -33,46 +33,40 @@
       color: #aaa;
       font-style: italic;
     }
+    .highlight {
+      background-color: #dff0d8;
+      border-left: 5px solid #4CAF50;
+      padding-left: 10px;
+    }
   </style>
 </head>
 <body>
   <h1>📅 Календарь дней рождения</h1>
 
-  <div class="month">
+  <div class="month" data-month="0">
     <h2>Январь</h2>
-    <ul>
-      <li>02 — Соня Шишуева</li>
-    </ul>
+    <ul><li>02 — Соня Шишуева</li></ul>
   </div>
-
-  <div class="month">
+  <div class="month" data-month="1">
     <h2>Февраль</h2>
-    <ul>
-      <li>11 — Татьяна</li>
-    </ul>
+    <ul><li>11 — Татьяна</li></ul>
   </div>
-
-  <div class="month">
+  <div class="month" data-month="2">
     <h2>Март</h2>
     <ul>
       <li>17 — Владимир</li>
       <li>24 — Даня Кур 17а</li>
     </ul>
   </div>
-
-  <div class="month">
+  <div class="month" data-month="3">
     <h2>Апрель</h2>
     <ul><li class="empty">(пусто)</li></ul>
   </div>
-
-  <div class="month">
+  <div class="month" data-month="4">
     <h2>Май</h2>
-    <ul>
-      <li>29 — Ph🤭</li>
-    </ul>
+    <ul><li>29 — Ph🤭</li></ul>
   </div>
-
-  <div class="month">
+  <div class="month" data-month="5">
     <h2>Июнь</h2>
     <ul>
       <li>03 — Наташа Чкалова 17а</li>
@@ -80,45 +74,39 @@
       <li>27 — Владимир (повтор?)</li>
     </ul>
   </div>
-
-  <div class="month">
+  <div class="month" data-month="6">
     <h2>Июль</h2>
     <ul><li class="empty">(пусто)</li></ul>
   </div>
-
-  <div class="month">
+  <div class="month" data-month="7">
     <h2>Август</h2>
-    <ul>
-      <li>21 — Ben</li>
-    </ul>
+    <ul><li>21 — Ben</li></ul>
   </div>
-
-  <div class="month">
+  <div class="month" data-month="8">
     <h2>Сентябрь</h2>
-    <ul>
-      <li>02 — qq</li>
-    </ul>
+    <ul><li>02 — qq</li></ul>
   </div>
-
-  <div class="month">
+  <div class="month" data-month="9">
     <h2>Октябрь</h2>
-    <ul>
-      <li>30 — Hellsing</li>
-    </ul>
+    <ul><li>30 — Hellsing</li></ul>
   </div>
-
-  <div class="month">
+  <div class="month" data-month="10">
     <h2>Ноябрь</h2>
     <ul><li class="empty">(пусто)</li></ul>
   </div>
-
-  <div class="month">
+  <div class="month" data-month="11">
     <h2>Декабрь</h2>
-    <ul>
-      <li>29 — Мышка</li>
-    </ul>
+    <ul><li>29 — Мышка</li></ul>
   </div>
 
+  <script>
+    const currentMonth = new Date().getMonth(); // 0 — Январь, 11 — Декабрь
+    const months = document.querySelectorAll('.month');
+    months.forEach(month => {
+      if (parseInt(month.dataset.month) === currentMonth) {
+        month.classList.add('highlight');
+      }
+    });
+  </script>
 </body>
 </html>
-      
