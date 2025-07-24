@@ -9,39 +9,32 @@
       font-family: Arial, sans-serif;
       background-color: #f9f9f9;
       color: #333;
-      padding: 40px;
       margin: 0;
-    }
-
-    .calendar-container {
-      height: 500px; /* фиксированная высота */
-      overflow-y: auto;
-      border: 1px solid #ccc;
-      border-radius: 10px;
-      background-color: #fff;
       padding: 20px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-      scroll-behavior: smooth;
-      /* Ширина не фиксирована - растягивается по доступному пространству */
-      width: 100%;
-      max-width: 100%;
-      box-sizing: border-box;
     }
 
     h1 {
+      position: sticky; /* Заголовок будет закреплён сверху при прокрутке */
+      top: 0;
+      background: #fff;
+      padding: 10px 0;
+      margin: 0 0 20px 0;
+      border-bottom: 2px solid #ccc;
+      z-index: 10;
       text-align: center;
-      color: #2c3e50;
-      margin-bottom: 20px;
+      font-size: 24px;
     }
 
     .month {
       margin-bottom: 20px;
+      padding-top: 40px; /* Отступ сверху для прокрутки (чтобы месяц не прилипал к заголовку) */
+      scroll-margin-top: 80px; /* современный способ смещения при scrollIntoView */
     }
 
     .month h2 {
       border-bottom: 2px solid #ccc;
       padding-bottom: 5px;
-      margin-top: 30px;
+      margin-top: 0;
     }
 
     ul {
@@ -68,20 +61,19 @@
 </head>
 <body>
   <h1>📅 Календарь дней рождения</h1>
-  <div class="calendar-container" id="calendar">
-    <div class="month" data-month="0"><h2>Январь</h2><ul><li>02 — Соня Шишуева</li></ul></div>
-    <div class="month" data-month="1"><h2>Февраль</h2><ul><li>11 — Татьяна</li></ul></div>
-    <div class="month" data-month="2"><h2>Март</h2><ul><li>17 — Владимир</li><li>24 — Даня Кур 17а</li></ul></div>
-    <div class="month" data-month="3"><h2>Апрель</h2><ul><li class="empty">(пусто)</li></ul></div>
-    <div class="month" data-month="4"><h2>Май</h2><ul><li>29 — Ph🤭</li></ul></div>
-    <div class="month" data-month="5"><h2>Июнь</h2><ul><li>03 — Наташа Чкалова 17а</li><li>08 — Роман.П</li><li>27 — Владимир (повтор?)</li></ul></div>
-    <div class="month" data-month="6"><h2>Июль</h2><ul><li class="empty">(пусто)</li></ul></div>
-    <div class="month" data-month="7"><h2>Август</h2><ul><li>21 — Ben</li></ul></div>
-    <div class="month" data-month="8"><h2>Сентябрь</h2><ul><li>02 — qq</li></ul></div>
-    <div class="month" data-month="9"><h2>Октябрь</h2><ul><li>30 — Hellsing</li></ul></div>
-    <div class="month" data-month="10"><h2>Ноябрь</h2><ul><li class="empty">(пусто)</li></ul></div>
-    <div class="month" data-month="11"><h2>Декабрь</h2><ul><li>29 — Мышка</li></ul></div>
-  </div>
+
+  <div class="month" data-month="0"><h2>Январь</h2><ul><li>02 — Соня Шишуева</li></ul></div>
+  <div class="month" data-month="1"><h2>Февраль</h2><ul><li>11 — Татьяна</li></ul></div>
+  <div class="month" data-month="2"><h2>Март</h2><ul><li>17 — Владимир</li><li>24 — Даня Кур 17а</li></ul></div>
+  <div class="month" data-month="3"><h2>Апрель</h2><ul><li class="empty">(пусто)</li></ul></div>
+  <div class="month" data-month="4"><h2>Май</h2><ul><li>29 — Ph🤭</li></ul></div>
+  <div class="month" data-month="5"><h2>Июнь</h2><ul><li>03 — Наташа Чкалова 17а</li><li>08 — Роман.П</li><li>27 — Владимир (повтор?)</li></ul></div>
+  <div class="month" data-month="6"><h2>Июль</h2><ul><li class="empty">(пусто)</li></ul></div>
+  <div class="month" data-month="7"><h2>Август</h2><ul><li>21 — Ben</li></ul></div>
+  <div class="month" data-month="8"><h2>Сентябрь</h2><ul><li>02 — qq</li></ul></div>
+  <div class="month" data-month="9"><h2>Октябрь</h2><ul><li>30 — Hellsing</li></ul></div>
+  <div class="month" data-month="10"><h2>Ноябрь</h2><ul><li class="empty">(пусто)</li></ul></div>
+  <div class="month" data-month="11"><h2>Декабрь</h2><ul><li>29 — Мышка</li></ul></div>
 
   <script>
     const currentMonth = new Date().getMonth();
