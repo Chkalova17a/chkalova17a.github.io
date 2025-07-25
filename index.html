@@ -73,21 +73,7 @@
   <div id="calendar">Загрузка...</div>
 
   <script>
-    const API_URL = 'https://chkalova-bot.deno.dev/calendar'; // ← ЗАМЕНИ на свой API-адрес
-
-    async function loadData() {
-      try {
-        const response = await fetch(API_URL);
-        if (!response.ok) throw new Error("Ошибка загрузки данных");
-
-        const json = await response.json();
-        const parsed = parseDates(json.dates);
-        renderCalendar(parsed);
-      } catch (error) {
-        document.getElementById('calendar').innerHTML =
-          `<p style="color:red">Ошибка загрузки данных: ${error.message}</p>`;
-      }
-    }
+    const API_URL = 'https://chkalova-bot.deno.dev/calendar'; // твой API
 
     const MONTHS_RU = [
       "января", "февраля", "марта", "апреля", "мая", "июня",
@@ -163,6 +149,32 @@
         calendar.appendChild(monthDiv);
       });
 
-      // Scroll and highlight current month
-      const currentMonth = new Date(
-    
+      // Подсветка и скролл к текущему месяцу
+      const currentMonth = new Date().getMonth();
+      const monthsElems = calendar.querySelectorAll('.month');
+      monthsElems.forEach(month => {
+        if (parseInt(month.dataset.month) === currentMonth) {
+          month.classList.add('highlight');
+          month.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      });
+    }
+
+    async function loadData() {
+      try {
+        const response = await fetch(API_URL);
+        if (!response.ok) throw new Error("Ошибка загрузки данных");
+
+        const json = await response.json();
+        const parsed = parseDates(json); // исправлено здесь
+        renderCalendar(parsed);
+      } catch (error) {
+        document.getElementById('calendar').innerHTML =
+          `<p style="color:red">Ошибка загрузки данных: ${error.message}</p>`;
+      }
+    }
+
+    loadData();
+  </script>
+</body>
+</html>
