@@ -70,32 +70,26 @@
 </head>
 <body>
   <h1>📅 Календарь дней рождения</h1>
-  <div id="calendar"></div>
+  <div id="calendar">Загрузка...</div>
 
   <script>
-    const data = [
-      {"name": "Соня Шишуева", "date": "2025-01-02", "telegram": "sonya"},
-      {"name": "Татьяна", "date": "2025-02-11", "telegram": "tatiana"},
-      {"name": "Владимир", "date": "2025-03-17", "telegram": "vladimir"},
-      {"name": "Даня Кур 17а", "date": "2025-03-24", "telegram": "danya17a"},
-      {"name": "mayan", "date": "2025-03-26", "telegram": "mayan"},
-      {"name": "Ph🤭", "date": "2025-05-29", "telegram": "ph"},
-      {"name": "Наташа Чкалова 17а", "date": "2025-06-03", "telegram": "natasha17a"},
-      {"name": "Роман.П", "date": "2025-06-08", "telegram": "romanp"},
-      {"name": "Vladimir", "date": "2025-06-27", "telegram": "vladimir2"},
-      {"name": "Ставр", "date": "2025-08-25", "telegram": "stavr"},
-      {"name": "Hellsing", "date": "2025-10-30", "telegram": "hellsing"},
-      {"name": "Мышка", "date": "2025-12-29", "telegram": "myshka"}
-    ];
+    const API_URL = 'https://gist.githubusercontent.com/BenTelega/b6ac8a95d6beedc777718c75586db5ac/raw/8c574719aa50f532b093f227718d0d6318087d2a/birthdays.json'; // Замените на свой Gist Raw URL
 
-    const monthsNames = [
-      "Январь", "Февраль", "Март", "Апрель", "Май", "Июнь",
-      "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"
-    ];
+    async function loadData() {
+      try {
+        const response = await fetch(API_URL);
+        if (!response.ok) throw new Error("Ошибка загрузки данных");
+        const data = await response.json();
+        renderCalendar(data);
+      } catch (error) {
+        document.getElementById('calendar').innerHTML =
+          `<p style="color:red">Ошибка загрузки данных: ${error.message}</p>`;
+      }
+    }
 
     function groupByMonth(data) {
       const grouped = Array.from({ length: 12 }, () => []);
-      data.forEach(({name, date, telegram}) => {
+      data.forEach(({ name, date, telegram }) => {
         const d = new Date(date);
         if (!isNaN(d)) {
           grouped[d.getMonth()].push({ name, day: d.getDate(), telegram });
@@ -104,9 +98,15 @@
       return grouped;
     }
 
-    function renderCalendar() {
+    function renderCalendar(data) {
       const calendar = document.getElementById('calendar');
+      calendar.innerHTML = '';
       const grouped = groupByMonth(data);
+
+      const monthsNames = [
+        "Январь", "Февраль", "Март", "Апрель", "Май", "Июнь",
+        "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"
+      ];
 
       grouped.forEach((birthdays, monthIndex) => {
         const monthDiv = document.createElement('div');
@@ -125,9 +125,8 @@
           ul.appendChild(li);
         } else {
           birthdays.sort((a, b) => a.day - b.day);
-          birthdays.forEach(({name, day, telegram}) => {
+          birthdays.forEach(({ name, day, telegram }) => {
             const li = document.createElement('li');
-
             const a = document.createElement('a');
             a.href = `https://t.me/${telegram}`;
             a.target = '_blank';
@@ -144,6 +143,7 @@
         calendar.appendChild(monthDiv);
       });
 
+      // Подсветка и скролл к текущему месяцу
       const currentMonth = new Date().getMonth();
       const monthsElems = calendar.querySelectorAll('.month');
       monthsElems.forEach(month => {
@@ -154,7 +154,7 @@
       });
     }
 
-    renderCalendar();
+    loadData();
   </script>
 </body>
 </html>
