@@ -73,27 +73,52 @@
   <div id="calendar">Загрузка...</div>
 
   <script>
-    const API_URL = 'https://gist.githubusercontent.com/BenTelega/b6ac8a95d6beedc777718c75586db5ac/raw/b071c0ba92da05447668fb61716159e78ddbe03c/birthdays.json'; // Замените на свой Gist Raw URL
+    const API_URL = 'https://your-api.com/birthdays'; // ← ЗАМЕНИ на свой API-адрес
 
     async function loadData() {
       try {
         const response = await fetch(API_URL);
         if (!response.ok) throw new Error("Ошибка загрузки данных");
-        const data = await response.json();
-        renderCalendar(data);
+
+        const json = await response.json();
+        const parsed = parseDates(json.dates);
+        renderCalendar(parsed);
       } catch (error) {
         document.getElementById('calendar').innerHTML =
           `<p style="color:red">Ошибка загрузки данных: ${error.message}</p>`;
       }
     }
 
+    const MONTHS_RU = [
+      "января", "февраля", "марта", "апреля", "мая", "июня",
+      "июля", "августа", "сентября", "октября", "ноября", "декабря"
+    ];
+
+    const MONTHS_TITLE = [
+      "Январь", "Февраль", "Март", "Апрель", "Май", "Июнь",
+      "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"
+    ];
+
+    function parseDates(dates) {
+      return dates.map(({ name, username, date_text }) => {
+        const [dayStr, monthName] = date_text.toLowerCase().split(" ");
+        const day = parseInt(dayStr, 10);
+        const month = MONTHS_RU.indexOf(monthName);
+        if (isNaN(day) || month === -1) return null;
+
+        return {
+          name,
+          telegram: username,
+          day,
+          month
+        };
+      }).filter(Boolean);
+    }
+
     function groupByMonth(data) {
       const grouped = Array.from({ length: 12 }, () => []);
-      data.forEach(({ name, date, telegram }) => {
-        const d = new Date(date);
-        if (!isNaN(d)) {
-          grouped[d.getMonth()].push({ name, day: d.getDate(), telegram });
-        }
+      data.forEach(({ name, day, month, telegram }) => {
+        grouped[month].push({ name, day, telegram });
       });
       return grouped;
     }
@@ -103,18 +128,13 @@
       calendar.innerHTML = '';
       const grouped = groupByMonth(data);
 
-      const monthsNames = [
-        "Январь", "Февраль", "Март", "Апрель", "Май", "Июнь",
-        "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"
-      ];
-
       grouped.forEach((birthdays, monthIndex) => {
         const monthDiv = document.createElement('div');
         monthDiv.classList.add('month');
         monthDiv.dataset.month = monthIndex;
 
         const monthHeader = document.createElement('h2');
-        monthHeader.textContent = monthsNames[monthIndex];
+        monthHeader.textContent = MONTHS_TITLE[monthIndex];
         monthDiv.appendChild(monthHeader);
 
         const ul = document.createElement('ul');
@@ -133,7 +153,7 @@
             a.rel = 'noopener noreferrer';
             a.textContent = name;
 
-            li.textContent = `${day.toString().padStart(2,'0')} — `;
+            li.textContent = `${day.toString().padStart(2, '0')} — `;
             li.appendChild(a);
             ul.appendChild(li);
           });
@@ -143,18 +163,6 @@
         calendar.appendChild(monthDiv);
       });
 
-      // Подсветка и скролл к текущему месяцу
-      const currentMonth = new Date().getMonth();
-      const monthsElems = calendar.querySelectorAll('.month');
-      monthsElems.forEach(month => {
-        if (parseInt(month.dataset.month) === currentMonth) {
-          month.classList.add('highlight');
-          month.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
-      });
-    }
-
-    loadData();
-  </script>
-</body>
-</html>
+      // Scroll and highlight current month
+      const currentMonth = new Date(
+    
